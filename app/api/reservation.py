@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
 from app.database.database import get_db
 from app.models.reservation import Reservation
 from app.schemas.reservation import ReservationCreate, ReservationResponse
+from app.services.reservation_service import create_reservation, cancel_reservation
 
 
 router = APIRouter(
@@ -17,23 +17,22 @@ router = APIRouter(
     response_model=ReservationResponse,
     status_code=201
 )
-def create_reservation(
+def create(
     reservation: ReservationCreate,
     db: Session = Depends(get_db)
 ):
-    new_reservation = Reservation(
-        person_id=reservation.person_id,
-        parking_spot_id=reservation.parking_spot_id,
-        start_time=reservation.start_time,
-        end_time=reservation.end_time
-    )
+    return create_reservation(db, reservation)
 
-    db.add(new_reservation)
-    db.commit()
-    db.refresh(new_reservation)
 
-    return new_reservation
-
+@router.delete(
+    "/{reservation_id}",
+    response_model=ReservationResponse,
+)
+def cancel(
+    reservation_id: int,
+    db: Session = Depends(get_db)
+):
+    return cancel_reservation(db, reservation_id)
 
 @router.get(
     "",

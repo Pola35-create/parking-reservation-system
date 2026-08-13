@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    container_name: parking-reservation-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - parking_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:////./data/parking.db
+    restart: unless-stopped
+
+volumes:
+  parking_data:

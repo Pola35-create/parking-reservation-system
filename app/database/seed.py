@@ -1,11 +1,14 @@
 from sqlalchemy.orm import Session
-from app.database.database import SessionLocal
+from app.database.database import Base, engine, SessionLocal
 from app.enums.parking_spot_type import ParkingSpotType
 from app.models.parking_spot import ParkingSpot
 from app.models.person import Person
+from app.models.reservation import Reservation
 
 # Seed the database with initial data
 def seed_database():
+    # Create database tables and session
+    Base.metadata.create_all(bind=engine)
     db: Session = SessionLocal()
 
     try:
@@ -27,11 +30,11 @@ def seed_database():
 
         # Create initial people
         people = [
-            Person(name="Alice", email="alice@example.com"),
-            Person(name="Bob", email="bob@example.com"),
-            Person(name="Charlie", email="charlie@example.com"),
-            Person(name="David", email="david@example.com"),
-            Person(name="Eve", email="eve@example.com")
+            Person(name="Alice", email="alice@example.com", can_use_electric=True, can_use_accessible=False, can_use_dedicated=False),
+            Person(name="Bob", email="bob@example.com", can_use_electric=False, can_use_accessible=False, can_use_dedicated=True),
+            Person(name="Charlie", email="charlie@example.com", can_use_electric=False, can_use_accessible=False, can_use_dedicated=False),
+            Person(name="David", email="david@example.com", can_use_electric=False, can_use_accessible=True, can_use_dedicated=False),
+            Person(name="Eve", email="eve@example.com", can_use_electric=True, can_use_accessible=False, can_use_dedicated=False)
         ]
 
         # Add and commit the initial data to the database
@@ -47,3 +50,7 @@ def seed_database():
     # Close the database session
     finally:
         db.close()
+
+# Run the seed_database function if this script is executed directly
+if __name__ == "__main__":
+    seed_database()

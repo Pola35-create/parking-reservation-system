@@ -6,7 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 DATA_DIR = Path("data")
 DATA_DIR.mkdir(exist_ok=True)
 
-DATABASE_URL = "sqlite:///{DATA_DIR}/parking.db"
+DATABASE_URL = f"sqlite:///{DATA_DIR}/parking.db"
 
 # Base class for all database models
 class Base(DeclarativeBase):

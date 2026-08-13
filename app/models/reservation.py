@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import DateTime, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
 from app.enums.reservation_status import ReservationStatus
 
@@ -15,3 +15,6 @@ class Reservation(Base):
     end_time: Mapped[datetime] = mapped_column(nullable=False)
     status: Mapped[ReservationStatus] = mapped_column(SQLEnum(ReservationStatus), default=ReservationStatus.RESERVED, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=False)
+
+    parking_spot = relationship("ParkingSpot", back_populates="reservations")
+    person = relationship("Person", back_populates="reservations")

@@ -1,5 +1,5 @@
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
 
 class Person(Base):
@@ -12,3 +12,5 @@ class Person(Base):
     can_use_electric: Mapped[bool] = mapped_column(default=False, nullable=False)
     can_use_accessible: Mapped[bool] = mapped_column(default=False, nullable=False)
     can_use_dedicated: Mapped[bool] = mapped_column(default=False, nullable=False)
+
+    reservations = relationship("Reservation", back_populates="person")

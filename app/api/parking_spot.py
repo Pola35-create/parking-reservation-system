@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.parking_spot import ParkingSpot
+from app.models.reservation import Reservation
 from app.schemas.parking_spot import ParkingSpotCreate, ParkingSpotResponse
+from app.schemas.reservation import ReservationResponse
 
 
 router = APIRouter(
@@ -50,3 +52,26 @@ def get_parking_spots(
     db: Session = Depends(get_db)
 ):
     return db.query(ParkingSpot).all()
+
+
+@router.get(
+    "/{parking_spot_id}/reservations",
+    response_model=list[ReservationResponse]
+)
+def get_parking_spot_reservations(
+    parking_spot_id: int,
+    db: Session = Depends(get_db)
+):
+    parking_spot = db.get(ParkingSpot, parking_spot_id)
+
+    if parking_spot is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Parking spot not found"
+        )
+
+    return (
+        db.query(Reservation)
+        .filter(Reservation.parking_spot_id == parking_spot_id)
+        .all()
+    )

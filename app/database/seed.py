@@ -39,6 +39,11 @@ def seed_database():
         db.add_all(people)
         db.commit()
 
+    # Handle any exceptions that occur during the seeding process
+    except Exception:
+        db.rollback()
+        raise
+
     # Close the database session
     finally:
         db.close()

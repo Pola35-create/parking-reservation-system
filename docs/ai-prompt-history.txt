@@ -1,0 +1,151 @@
+AI PROMPT HISTORY
+
+Prompt 1
+---------
+I need to design and implement a Parking Spot Reservation System as a backend project.
+The project must satisfy these requirements:
+* Backend implementation in Python.
+* The framework is not predetermined;I am currently considering FastAPI.
+* The system must use a persistent database. In-memory state alone is not acceptable.
+* The database technology and schema are up to us.
+* The application must start with an initialized and populated database so it can be tested immediately.
+* The system must be runnable with a single command. Docker/Docker Compose is acceptable and preferred.
+
+* The system must:
+1. Record parking spaces.
+2. Accept reservation requests containing parking spot, start time, end time, and booker/person.
+3. Decide whether a reservation request is acceptable.
+4. Allow reservations for a specific parking spot to be queried.
+5. Allow reservations to be cancelled.
+
+* I also want to implement different parking spot types, such as standard and restricted-use spots.
+* I need to provide unit and/or integration tests.
+* I need a System Plan describing architecture, design decisions, components, effectiveness, and possible scalability considerations.
+* I need an API Description documenting the available operations.
+* I need a User Manual explaining how to run and use the system.
+* I need a Decision Diary documenting important problems, decisions, alternatives, and reasons for choosing one solution over another.
+* I also need to maintain an AI prompt history.
+* The source code will be submitted in a public GitHub repository.
+* The Git history should demonstrate small, functioning MVP-like development steps rather than one large final commit.
+
+I want to build this as a clean but appropriately sized software engineering project, without unnecessary overengineering.
+For the initial step, DO NOT implement the entire application. Instead, act as a senior backend/software architect and help me establish the project foundation.
+Please:
+1. Evaluate whether FastAPI + SQLAlchemy + SQLite + pytest + Docker Compose is an appropriate stack for this assignment.
+2. Propose a simple architecture with clear separation between API, business logic/services, and database access.
+3. Propose the domain model and database schema for: * Person * ParkingSpot * Reservation
+4. Explain how different parking spot types and their usage restrictions should be represented without overengineering the solution.
+5. Define the core business rules for accepting/rejecting reservations, especially overlapping reservations.
+6. Propose a minimal but complete REST API.
+7. Propose a clean Python project directory structure.
+8. Explain how database initialization and seed data should work so the application is immediately usable after startup.
+9. Explain how Docker/Docker Compose should be structured so the complete system can be started with one command.
+10. Propose a testing strategy covering unit tests, integration tests, and important edge cases.
+11. Suggest a sensible sequence of small Git commits that demonstrates incremental MVP development.
+12. Identify the most important architectural decisions that should later appear in the Decision Diary.
+13. Identify any potential ambiguities or risks in my requirements that I should resolve before implementation.
+
+Do not generate the complete source code, I want to do that myself.
+The goal of this step is to produce a solid implementation plan that I can then implement incrementally, committing each functioning step to Git.
+
+Prompt 2
+---------
+How can I make this line of code, to only allow strings of 5 characters? No more, no less.
+spot_name: Mapped[str] = mapped_column(String(5), nullable=False, unique=True)
+I want to create a enum out of 4 types of parking_spots and then make this column restriced to those types.
+type: Mapped[str] = mapped_column(String(20), nullable=False)
+
+Prompt 3
+---------
+class Reservation(Base):
+__tablename__ = "reservation"
+id: Mapped[int] = mapped_column(primary_key=True, index=True)
+person_id: Mapped[int] = mapped_column(nullable=False)
+parking_spot_id: Mapped[int] = mapped_column(nullable=False)
+start_time: Mapped[DateTime] = mapped_column(nullable=False)
+end_time: Mapped[DateTime] = mapped_column(nullable=False)
+status: Mapped[ReservationStatus] = mapped_column(SQLEnum(ReservationStatus), nullable=False, default=ReservationStatus.FREE)
+created_at: Mapped[DateTime] = mapped_column(nullable=False)
+Tell me how can I make person_id and parking_spot_id Foreign Keys in this model. I already imported the dependencies.
+
+Prompt 4
+---------
+Help me create parking spot API and person API.
+Implement POST/parking-spots, GET/parking-spots, POST/person, GET/person
+
+Prompt 5
+---------
+If this goes into my schemas folder files, what goes into the api folder files? I also did not plan on creating routers
+
+Prompt 6
+---------
+I see all three if I run it, but nothing is seen even though I have data in my parking.db, or now it is not a problem?
+
+Prompt 7
+---------
+I click on GET/parking-spot -> Try it out -> Execute:
+Curl: curl -X 'GET' \
+'http://127.0.0.1:8000/parking-spot' \
+-H 'accept: application/json'
+Request URL: http://127.0.0.1:8000/parking-spot
+Code: 500
+Error: Internal Server Error
+Response body: Internal Server Error
+Response header: content-length: 21 content-type: text/plain; charset=utf-8 date: Thu,13 Aug 2026 20:13:04 GMT server: uvicorn
+What does this mean? What should my next step be? Try to work this out?
+
+Prompt 8
+---------
+Now it is:
+
+404 Error: Not Found
+
+Response body
+{
+  "detail": "Not Found"
+}
+
+Response headers
+content-length: 22  content-type: application/json  date: Thu,13 Aug 2026 20:22:46 GMT  server: uvicorn
+
+Prompt 9
+---------
+All the GET requests are working fine. Now how can I test POST requests?
+
+Prompt 10
+---------
+GET /parking-spots/{id}/reservations
+I want to add a request type like this to my project, so a certain parking spots reservations are also queriable.
+Explain me how to do it and why.
+
+Prompt 11
+---------
+Create a pytest conftest.py for a small FastAPI backend using SQLAlchemy and SQLite.
+I need two fixtures:
+- db_session for unit tests
+- client for FastAPI integration tests
+Use a separate in-memory SQLite test database, not the application's real database.
+The database fixture should:
+- use SQLAlchemy create_engine
+- use sqlite://
+- use StaticPool
+- use connect_args={"check_same_thread": False}
+- create all tables with Base.metadata.create_all()
+- yield a SQLAlchemy test session - close the session afterward
+- drop the tables afterward
+- dispose the engine afterward
+The client fixture should:
+- use FastAPI TestClient
+- override the application's get_db dependency with the test database session
+- clear app.dependency_overrides after each test
+Assume the project has:
+- app.database.database containing Base and get_db
+- app.main containing the FastAPI instance named app
+- SQLAlchemy models in app.models
+Import the models needed so that SQLAlchemy knows about their tables before create_all() runs.
+Generate only the complete tests/conftest.py file and a short explanation of how it works.
+
+Prompt 12
+---------
+Provide me a docker compose configuration to my project.
+Make sure it works in a clean environment and the most important to be able to run the whole project with one single command.

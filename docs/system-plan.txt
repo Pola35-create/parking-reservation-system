@@ -1,0 +1,17 @@
+The solution is a Python-based REST API built with FastAPI.
+The application is organized into separate components to keep the API, business logic, data models, and database operations clearly separated.
+
+The application runs with Uvicorn inside Docker.
+On startup, the database is initialized and populated with initial data so that the system can be used immediately.
+Pytest is used for testing, including unit tests and API integration tests with a separate in-memory test database.
+
+This structure separates responsibilities between the different parts of the system, making the application easier to maintain, test, and extend.
+
+The main components are:
+API(Routes) – Defines the REST endpoints used to interact with the system, such as managing persons, parking spots, and reservations.
+Services – Contains the business logic, like reservation creation and cancellation, also validate the required operations.
+Models – Defines the database entities: Person, ParkingSpot, and Reservation.
+Schemas – Defines the structure and validation of API request and response data.
+Database – Uses SQLite with SQLAlchemy for persistent data storage and database access.
+Enums – Contains predefined values used by the system.
+Main application – Starts the FastAPI application.
